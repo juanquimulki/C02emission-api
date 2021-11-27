@@ -7,7 +7,7 @@ class State
     private $states = [
         "Alabama" => "AL.A",
         "California" => "CA.A",
-        "Hawai" => "HI.A"
+        "Hawaii" => "HI.A"
     ];
 
     public function getStates() {
