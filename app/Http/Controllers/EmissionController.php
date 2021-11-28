@@ -29,6 +29,9 @@ class EmissionController extends Controller
             $sum += $arrayData[$i][1];
         }
 
-        echo round($sum,1) . " million";
+        $arrayResponse = [
+            "value" => round($sum,1) . " million"
+        ];
+        return parent::response(true,$arrayResponse,200);
     }
 }
