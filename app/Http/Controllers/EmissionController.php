@@ -12,6 +12,16 @@ use App\Models\State as State;
 class EmissionController extends Controller
 {
     public function read(Request $request) {
+        $data = ['state' => $request->state];
+
+        $validator = \Validator::make($data, [
+            'state' => ['required']
+        ]);
+    
+        if ($validator->fails()) {
+            return parent::response(false,$validator->errors(),400);
+        }
+
         $stateObj = new State();
         $stateQuery = $stateObj->getStates()[$request->state];
 
