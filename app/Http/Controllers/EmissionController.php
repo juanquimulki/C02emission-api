@@ -28,7 +28,8 @@ class EmissionController extends Controller
         //     return parent::response(false,$validator->errors(),400);
         // }
 
-        $arrayResponse = [
+        $arrayResponse = array();
+        array_push($arrayResponse, [
             "state" => $request->state,
             "from"  => $request->from,
             "to"    => $request->to,
@@ -38,7 +39,8 @@ class EmissionController extends Controller
                 $request->to, 
                 $this->getRequestUrl($request->state)
             )
-        ];
+        ]);
+
         return parent::response(true, $arrayResponse, 200);
     }
 
