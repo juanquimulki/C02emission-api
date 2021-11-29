@@ -19,3 +19,5 @@ $router->get('/', function () use ($router) {
 
 $router->get('/emission/{state}/{from}/{to}', ['uses' => 'EmissionController@readOne']);
 $router->get('/emission/{from}/{to}', ['uses' => 'EmissionController@readAll']);
+
+$router->get('/state', ['uses' => 'StateController@readAll']);
