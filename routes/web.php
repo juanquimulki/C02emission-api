@@ -17,4 +17,4 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/emission', ['uses' => 'EmissionController@read']);
+$router->get('/emission/{state}/{from}/{to}', ['uses' => 'EmissionController@read']);

@@ -12,10 +12,16 @@ use App\Models\State as State;
 class EmissionController extends Controller
 {
     public function read(Request $request) {
-        $data = ['state' => $request->state];
+        $data = [
+            'state' => $request->state,
+            'from' => $request->from,
+            'to' => $request->to,
+        ];
 
         $validator = \Validator::make($data, [
-            'state' => ['required']
+            'state' => ['required'],
+            'from' => ['required'],
+            'to' => ['required']
         ]);
     
         if ($validator->fails()) {
