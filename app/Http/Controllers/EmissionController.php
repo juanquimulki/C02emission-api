@@ -11,43 +11,76 @@ use App\Models\State as State;
 
 class EmissionController extends Controller
 {
-    public function read(Request $request) {
-        $data = [
-            'state' => $request->state,
-            'from' => $request->from,
-            'to' => $request->to,
-        ];
+    public function readOne(Request $request) {
+        // $data = [
+        //     'state' => $request->state,
+        //     'from' => $request->from,
+        //     'to' => $request->to,
+        // ];
 
-        $validator = \Validator::make($data, [
-            'state' => ['required'],
-            'from' => ['required'],
-            'to' => ['required']
-        ]);
+        // $validator = \Validator::make($data, [
+        //     'state' => ['required'],
+        //     'from' => ['required'],
+        //     'to' => ['required']
+        // ]);
     
-        if ($validator->fails()) {
-            return parent::response(false,$validator->errors(),400);
+        // if ($validator->fails()) {
+        //     return parent::response(false,$validator->errors(),400);
+        // }
+
+        $arrayResponse = [
+            "state" => $request->state,
+            "from"  => $request->from,
+            "to"    => $request->to,
+            "value" => $this->getData(
+                $request->state, 
+                $request->from, 
+                $request->to, 
+                $this->getRequestUrl($request->state)
+            )
+        ];
+        return parent::response(true, $arrayResponse, 200);
+    }
+
+    public function readAll(Request $request) {
+        $arrayResponse = array();
+        $stateObj = new State();
+        $statesList = $stateObj->getStates();
+
+        foreach ($statesList as $state => $code) {
+            array_push($arrayResponse, [
+                "state" => $state,
+                "from"  => $request->from,
+                "to"    => $request->to,
+                "value" => $this->getData($state, $request->from, $request->to, $this->getRequestUrl($state))
+            ]);
         }
 
+        return parent::response(true,$arrayResponse,200);
+    }
+
+    private function getData($state, $from, $to, $requestUrl) {
+        $response = Http::get($requestUrl);
+        $arrayData = $response->json()["series"][0]["data"];
+
+        $sum = 0;
+        for ($i = env("YEAR_MAX") - $from; $i >= env("YEAR_MAX") - $to; $i--) {
+            $sum += $arrayData[$i][1];
+        }
+
+        return round($sum,1) . " million";    
+    }
+
+    private function getRequestUrl($state) {
         $stateObj = new State();
-        $stateQuery = $stateObj->getStates()[$request->state];
+        $stateQuery = $stateObj->getStates()[$state];
 
         $requestUrl  = env("HTTP_URL");
         $parameters = ["{%a}", "{%s}"];
         $data   = [env("API_KEY"), $stateQuery];
         
         $requestUrl = str_replace($parameters, $data, $requestUrl);
-        $response = Http::get($requestUrl);
 
-        $arrayData = $response->json()["series"][0]["data"];
-
-        $sum = 0;
-        for ($i = env("YEAR_MAX") - $request->from; $i >= env("YEAR_MAX") - $request->to; $i--) {
-            $sum += $arrayData[$i][1];
-        }
-
-        $arrayResponse = [
-            "value" => round($sum,1) . " million"
-        ];
-        return parent::response(true,$arrayResponse,200);
+        return $requestUrl;
     }
 }
