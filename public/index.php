@@ -1,4 +1,11 @@
 <?php
+header("Access-Control-Allow-Origin: *");      
+//header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: GET');
+header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type:application/json; charset=utf-8');
+//header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
