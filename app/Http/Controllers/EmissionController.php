@@ -11,23 +11,23 @@ use App\Models\State as State;
 
 class EmissionController extends Controller
 {
-    // public function validator() {
-    //     $data = [
-    //         'state' => $request->state,
-    //         'from' => $request->from,
-    //         'to' => $request->to,
-    //     ];
+    public function validator($request) {
+        $data = [
+            'state' => $request->state,
+            'from' => $request->from,
+            'to' => $request->to,
+        ];
 
-    //     $validator = \Validator::make($data, [
-    //         'state' => ['required'],
-    //         'from' => ['required'],
-    //         'to' => ['required']
-    //     ]);
+        $validator = \Validator::make($data, [
+            'state' => ['required'],
+            'from' => ['required'],
+            'to' => ['required']
+        ]);
     
-    //     if ($validator->fails()) {
-    //         return parent::response(false,$validator->errors(),400);
-    //     }
-    // }
+        if ($validator->fails()) {
+            return parent::response(false,$validator->errors(),400);
+        }
+    }
     
     public function readOne(Request $request) {
         $state = str_replace("%20"," ", $request->state);
